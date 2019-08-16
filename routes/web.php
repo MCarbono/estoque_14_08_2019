@@ -12,11 +12,19 @@
 */
 
 //Produto
-Route::get('/cadastroProduto', 'ProdutoController@index');
-Route::post('/formProduto', 'ProdutoController@store');
-Route::get('/listaProdutos', 'ProdutoController@listar');
+Route::get('/produtos', 'ProdutoController@index');
+Route::get('/produtoForm', 'ProdutoController@create');
+Route::post('/produtoForm', 'ProdutoController@store');
+Route::post('/produtoForm/{id}', 'ProdutoController@update');
+Route::get('/delete/{id}', 'ProdutoController@destroy');
+Route::get('/produtoEdit/{id}', 'ProdutoController@edit');
+
 
 
 //Fornecedor
-Route::get('/', 'FornecedorController@create');
-Route::post('/form', 'FornecedorController@store');
+Route::get('/fornecedor', 'FornecedorController@index');
+Route::get('/fornecedorForm', 'FornecedorController@create');
+Route::post('/fornecedorForm', 'FornecedorController@store');
+Route::post('/{id}', 'FornecedorController@update');
+Route::get('/fornecedorDelete/{id}', 'FornecedorController@destroy');
+Route::get('/fornecedorEdit/{id}', 'FornecedorController@edit');

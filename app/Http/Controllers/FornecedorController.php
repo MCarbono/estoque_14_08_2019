@@ -5,8 +5,13 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Fornecedor;
 use DB;
-class FornecedorController extends Controller
-{
+class FornecedorController extends Controller {
+
+    public function index(){
+        $fornecedor = Fornecedor::all();
+        return view('fornecedor', compact('fornecedor'));
+    }
+
     public function create(){
        return view('fornecedorForm');
     }
@@ -21,7 +26,7 @@ class FornecedorController extends Controller
             
             DB::commit();
     
-            return back()->with('success', 'Fornecedor cadastrado com sucesso');
+            return redirect()->action('FornecedorController@index');
 
         } catch(\Exception $e){
             DB::rollback();
@@ -29,5 +34,39 @@ class FornecedorController extends Controller
         }
     }
 
+    public function destroy($id){
+        DB::beginTransaction();
+
+        try {
+            $fornecedor = Fornecedor::findOrFail($id);
+            $fornecedor->delete();
+            DB::commit();
+
+            return redirect()->action('FornecedorController@index');
+        } catch(\Exception $e){
+            DB::rollback();
+            return $e;
+        }
+    }
+
+    public function edit($id){
+        $fornecedor = Fornecedor::findOrFail($id);
+        return view('fornecedorForm', compact('fornecedor'));
+    }
+
+    public function update(Request $request, $id){
+        DB::beginTransaction();
+
+        try {
+            $fornecedor = Fornecedor::findOrFail($id);
+            $fornecedor->update($request->all());
+            DB::commit();
+
+            return redirect()->action('FornecedorController@index');
+        } catch(\Exception $e){
+            DB::rollback();
+            return $e;
+        }
+    }
 }
 

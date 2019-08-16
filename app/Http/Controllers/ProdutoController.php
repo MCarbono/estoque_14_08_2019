@@ -3,23 +3,26 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Http\Requests\ProdutoRequest;
 use App\Fornecedor;
 use App\Produto;
 use DB;
 
-class ProdutoController extends Controller
-{
-    //
+class ProdutoController extends Controller {
     
-
     public function index(){
 
-        $fornecedores = Fornecedor::all();
-        return view('produtoForm',compact('fornecedores'));
+        $produtos = Produto::all();
+        $fornecedor = Fornecedor::all();
+        return view('produto',compact('produtos', 'fornecedor'));
     }
 
+    public function create(){
+        $fornecedores = Fornecedor::all();
+        return view('produtoForm', compact('fornecedores'));
+    }
 
-    public function store(Request $request){
+    public function store(produtoRequest $request){
     
     
         DB::beginTransaction();
@@ -29,7 +32,7 @@ class ProdutoController extends Controller
             $produto = Produto::create($request->all());
             DB::commit();
     
-            return back()->with('success', 'Produto cadastrado com sucesso');
+            return redirect()->action('ProdutoController@index');
 
         } catch(\Exception $e){
             DB::rollback();
@@ -37,20 +40,39 @@ class ProdutoController extends Controller
         }
     }
 
-    // public function update(){
-    //     $produto = Produto::findOrFail($id);
-    //     $fornecedor = Fornecedor::all();
-    //     return view();
+    public function destroy($id){
+        DB::beginTransaction();
 
-    // }
+        try {
+            $produto = Produto::findOrFail($id);
+            $produto->delete();
+            DB::commit();
 
-    public function listar(){
-        $produtos = Produto::all();
-        $fornecedor = Fornecedor::all();
-        return view('listaProduto',compact('produtos', 'fornecedor'));
+            return redirect()->action('ProdutoController@index');
+        } catch(\Exception $e){
+            DB::rollback();
+            return $e;
+        }
     }
 
-    
+    public function edit($id){
+        $fornecedores = Fornecedor::all();
+        $produto = Produto::findOrFail($id);
+        return view('produtoForm', compact('fornecedores', 'produto'));
+    }
 
+    public function update(produtoRequest $request, $id){
+        DB::beginTransaction();
 
+        try {
+            $produto = Produto::findOrFail($id);
+            $produto->update($request->all());
+            DB::commit();
+            return redirect()->action('ProdutoController@index');
+
+        } catch(\Exception $e){
+            DB::rollback();
+            return $e;
+        }
+    }
 }

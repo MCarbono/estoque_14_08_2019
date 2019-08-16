@@ -18,7 +18,7 @@ class CreateFornecedorsTable extends Migration
             $table->string('nome');
             $table->string('cnpj');
             $table->string('email');
-            $table->timestamps();
+            $table->softDeletes();
         });
     }
 
